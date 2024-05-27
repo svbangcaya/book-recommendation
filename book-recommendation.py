@@ -73,8 +73,14 @@ def recommend_book(genre):
 # Function to generate a detailed book description using Google Generative AI
 def generate_book_description(title, description):
     prompt = f"Provide a detailed summary for the book titled '{title}' which is described as '{description}'. Include information about the main plot, characters, and any significant themes or messages."
-    response = genai.generate(prompt)
-    return response.result
+    try:
+        response = genai.generate(prompt=prompt)
+        if 'choices' in response and len(response['choices']) > 0:
+            return response['choices'][0]['text'].strip()
+        else:
+            return "Sorry, no detailed description available."
+    except Exception as e:
+        return f"Error generating description: {str(e)}"
 
 # Main function to run the Streamlit app
 def main():
