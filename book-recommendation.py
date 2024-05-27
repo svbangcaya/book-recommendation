@@ -60,23 +60,33 @@ def recommend_book(genre):
     if genre.lower() in books_with_descriptions:
         return random.choice(books_with_descriptions[genre.lower()])
     else:
-        return "Sorry, we don't have recommendations for that genre."
+        return None
+
+# Function to generate a detailed book description using Google Generative AI
+def generate_book_description(title, description):
+    prompt = f"Provide a detailed summary for the book titled '{title}' which is described as '{description}'. Include information about the main plot, characters, and any significant themes or messages."
+    response = genai.generate(prompt)
+    return response.result
 
 # Main function to run the Streamlit app
 def main():
     st.title("BookBuddy")
-    st.subheader("Welcome to BookBuddy: Your Personal Book Recommendation Companion! Get personalized book recommendations based on your preferred genre.")
+    st.subheader("Welcome to BookBuddy: Your Personal Book Recommendation Companion! Get personalized book recommendations based on your mood and preferred genre.")
 
-    # Ask user for their preferred genre
+    # Initial conversation to determine mood
+    mood = st.selectbox("How are you feeling today?", ["Happy", "Sad", "Adventurous", "Relaxed", "Curious", "Scared"])
+
+    # First level of prompting: Ask user for their preferred genre
     genre = st.selectbox("Select your preferred book genre:", ["Fiction", "Mystery", "Fantasy", "Science Fiction", "Romance", "Horror", "Non-fiction", "Biography"])
 
-    # Recommend a book based on the user's preference
+    # Second level of prompting: Get the book recommendation
     if st.button("Recommend"):
         recommendation = recommend_book(genre)
-        if isinstance(recommendation, dict):
-            st.success(f"We recommend you read: {recommendation['title']} - {recommendation['description']}")
+        if recommendation:
+            detailed_description = generate_book_description(recommendation['title'], recommendation['description'])
+            st.success(f"Based on your mood ({mood}), we recommend you read: {recommendation['title']}\n\n{detailed_description}")
         else:
-            st.error(recommendation)
+            st.error("Sorry, we don't have recommendations for that genre.")
 
 if __name__ == "__main__":
     main()
