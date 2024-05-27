@@ -2,6 +2,10 @@ import streamlit as st
 import random
 import google.generativeai as genai
 from dotenv import load_dotenv
+import os
+
+# Initialize Google Generative AI client
+genai.init(api_key='AIzaSyBH9Ah7EmduExfkbKCFMNHy9oDJncdMJJs')
 
 # Dictionary of book recommendations categorized by genre
 books_with_descriptions = {
