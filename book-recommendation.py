@@ -4,6 +4,10 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
+# Load environment variables
+load_dotenv()
+GENAI_API_KEY = os.getenv('GENAI_API_KEY')
+
 # Initialize Google Generative AI client
 genai.init(api_key='AIzaSyBH9Ah7EmduExfkbKCFMNHy9oDJncdMJJs')
 
